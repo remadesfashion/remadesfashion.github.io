@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Remades Fashion | Style you to perfection</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- React and Babel CDNs -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        /* Fade effect strictly for images */
+        .img-fade { transition: opacity 1000ms ease-in-out; }
+
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        .img-hover { transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
+        .img-hover:hover { transform: scale(1.05); }
+    </style>
+</head>
+<body class="bg-stone-50 text-zinc-900">
+<div id="root"></div>
+
+<script type="text/babel">
+    const { useState, useEffect, useMemo } = React;
+
+    const WhatsAppLogo = ({ className }) => (
+        <svg viewBox="0 0 448 512" fill="currentColor" className={className}>
+            <path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-5.5-2.8-23.2-8.5-44.2-27.1-16.4-14.6-27.4-32.7-30.6-38.2-3.2-5.6-.3-8.6 2.5-11.3 2.5-2.5 5.5-6.5 8.3-9.7 2.8-3.3 3.7-5.6 5.6-9.3 1.8-3.7.9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 13.3 5.7 23.6 9.2 31.7 11.7 13.3 4.2 25.5 3.6 35.2 2.2 10.8-1.6 32.7-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z" />
+        </svg>
+    );
+
+    const TikTokIcon = ({ className }) => (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+            <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5" />
+        </svg>
+    );
+
+    const Icon = ({ name, className }) => {
+        useEffect(() => {
+            if (window.lucide) window.lucide.createIcons();
+        }, [name]);
+        return <i data-lucide={name} className={className}></i>;
+    };
+
+    const App = () => {
+        const [view, setView] = useState('home');
+        const [isMenuOpen, setIsMenuOpen] = useState(false);
+        const [isCartOpen, setIsCartOpen] = useState(false);
+        const [isFlyerOpen, setIsFlyerOpen] = useState(false);
+        const [cart, setCart] = useState([]);
+        const [activeSlide, setActiveSlide] = useState(0);
+
+        const PHONE_NUMBER = "2349057826879";
+        const EMAIL_ADDRESS = "omoladeeni2@gmail.com";
+        const SELAR_COURSE_URL = "https://selar.com/16r847727q";
+
+        // DATA CENTRAL
+        const allProducts = [
+            { id: 101, name: "Two-Piece Corporate Wear", price: 35000, img: "NEW1.jpeg", category: "New Arrival" },
+            { id: 102, name: "Blazer and Pant Suit", price: 45000, img: "NEW2.jpg", category: "Corporate" },
+            { id: 103, name: "Gold Dust Aso Oke (SOLD)", price: 280000, img: "NEW3.jpg", category: "Traditional" },
+            { id: 104, name: "Pearl Registry Midi (SOLD)", price: 155000, img: "NEW4.jpg", category: "Registry" },
+            { id: 105, name: "Luxury Bridal Veil (SOLD)", price: 45000, img: "NEW5", category: "Accessories" },
+            { id: 106, name: "Bespoke Power Blazer (SOLD)", price: 95000, img: "NEW6", category: "Ready-to-Wear" }
+        ];
+
+        const arrivals = allProducts.slice(0, 4);
+
+        const collections = [
+            { id: 'c1', title: 'Traditional', img: 'traditional.jpg' },
+            { id: 'c2', title: 'Corporate', img: 'COLL2.jpg' },
+            { id: 'c3', title: 'Bridal', img: 'COLL3.png' },
+            { id: 'c4', title: 'Registry', img: 'COLL4.png' },
+            { id: 'c5', title: 'Accessories', img: 'accesories.jpeg' },
+            { id: 'c6', title: 'Ready-to-Wear', img: 'readytowear.jpg' }
+        ];
+
+        const galleryImages = [
+            "GALL1.jpg", "GALL2.jpeg", "GALL3.jpg", "GALL4.jpg", "GALL5.jpeg",
+            "GALL6.jpeg", "GALL7.jpeg", "GALL8.jpeg", "GALL9.jpeg", "GALL10.jpeg"
+        ];
+
+        const heroImages = [ "HERO1.jpg", "HERO2.jpg", "HERO3.jpg" ];
+
+        const testimonials = [
+            { id: 1, name: "Sarah Adenuga", role: "Bride", text: "Remades made my dream wedding dress. The fit was perfection.", img: "TEST1.jpg" },
+            { id: 2, name: "Tolu Olayinka", role: "Executive", text: "Sharp tailoring for the modern woman. Loved my power suit.", img: "TEST2.jpg" },
+            { id: 3, name: "Amina Bello", role: "Guest", text: "Truly heritage redefined. I was the talk of the event.", img: "TEST3.jpg" },
+            { id: 4, name: "Chioma Richards", role: "Bride", text: "Elegant registry dress. Chic and minimalist.", img: "TEST4.jpg" }
+        ];
+
+        useEffect(() => {
+            const timer = setInterval(() => {
+                setActiveSlide((prev) => (prev + 1) % heroImages.length);
+            }, 4000);
+            return () => clearInterval(timer);
+        }, []);
+
+        useEffect(() => {
+            const hasSeenFlyer = sessionStorage.getItem('flyer_seen');
+            if (!hasSeenFlyer) {
+                const timeout = setTimeout(() => setIsFlyerOpen(true), 1500);
+                return () => clearTimeout(timeout);
+            }
+        }, []);
+
+        const addToCart = (product) => {
+            setCart(prev => [...prev, { ...product, cartId: Date.now() }]);
+        };
+
+        const removeFromCart = (cartId) => {
+            setCart(prev => prev.filter(item => item.cartId !== cartId));
+        };
+
+        const cartTotal = useMemo(() => {
+            return cart.reduce((sum, item) => sum + item.price, 0);
+        }, [cart]);
+
+        const handleCheckout = () => {
+            const itemsList = cart.map(item => `- ${item.name} (₦${item.price.toLocaleString()})`).join('%0A');
+            const message = `Hello Remades Fashion, I would like to order the following bespoke items:%0A%0A${itemsList}%0A%0ATotal Amount: ₦${cartTotal.toLocaleString()}`;
+            window.open(`https://wa.me/${PHONE_NUMBER}?text=${message}`, '_blank');
+        };
+
+        const closeFlyer = () => {
+            setIsFlyerOpen(false);
+            sessionStorage.setItem('flyer_seen', 'true');
+        };
+
+        const Navbar = () => (
+            <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-b border-zinc-100 px-4 h-16 flex items-center justify-between">
+                <button onClick={() => setIsMenuOpen(true)} className="p-2">
+                    <Icon name="menu" className="w-6 h-6" />
+                </button>
+                <div className="text-xl font-bold tracking-tighter uppercase text-zinc-900 cursor-pointer" onClick={() => setView('home')}>
+                    Remades <span className="text-amber-700">Fashion</span>
+                </div>
+                <button onClick={() => setIsCartOpen(true)} className="p-2 relative">
+                    <Icon name="shopping-bag" className="w-5 h-5" />
+                    {cart.length > 0 && (
+                        <span className="absolute top-1 right-1 bg-amber-600 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold">
+                            {cart.length}
+                        </span>
+                    )}
+                </button>
+            </nav>
+        );
+
+        const CartModal = () => (
+            <div className={`fixed inset-0 z-[100] transition-transform duration-300 ${isCartOpen ? 'translate-x-0' : 'translate-x-full'}`}>
+                <div className="absolute inset-0 bg-black/40" onClick={() => setIsCartOpen(false)}></div>
+                <div className="absolute right-0 top-0 bottom-0 w-[85%] bg-white shadow-2xl flex flex-col">
+                    <div className="p-6 border-b flex justify-between items-center">
+                        <h2 className="text-xl font-bold uppercase tracking-tighter">Your Bag ({cart.length})</h2>
+                        <button onClick={() => setIsCartOpen(false)}><Icon name="x" className="w-6 h-6" /></button>
+                    </div>
+                    <div className="flex-grow overflow-y-auto p-6 space-y-4 no-scrollbar">
+                        {cart.length === 0 ? (
+                            <p className="text-center text-zinc-400 mt-20 uppercase text-xs tracking-widest">Bag is empty</p>
+                        ) : (
+                            cart.map((item) => (
+                                <div key={item.cartId} className="flex gap-4 border-b pb-4 animate-fade-in">
+                                    <img src={item.img} className="w-16 h-20 object-cover bg-zinc-100" />
+                                    <div className="flex-grow">
+                                        <h4 className="text-[11px] font-bold uppercase tracking-tighter">{item.name}</h4>
+                                        <p className="text-amber-700 font-bold text-[10px] mt-1">₦{item.price.toLocaleString()}</p>
+                                        <button onClick={() => removeFromCart(item.cartId)} className="text-[9px] text-red-500 font-bold uppercase mt-2 underline">Remove</button>
+                                    </div>
+                                </div>
+                            ))
+                        )}
+                    </div>
+                    <div className="p-6 border-t bg-stone-50">
+                        <div className="flex justify-between items-center mb-4">
+                            <span className="text-[10px] font-bold uppercase text-zinc-500 tracking-widest">Total</span>
+                            <span className="font-bold">₦{cartTotal.toLocaleString()}</span>
+                        </div>
+                        <button onClick={handleCheckout} disabled={cart.length === 0} className="w-full bg-zinc-900 text-white py-4 font-bold uppercase text-[10px] tracking-[0.3em] disabled:opacity-50">
+                            Checkout via WhatsApp
+                        </button>
+                    </div>
+                </div>
+            </div>
+        );
+
+        const FlyerModal = () => (
+            isFlyerOpen && (
+                <div className="fixed inset-0 z-[200] flex items-center justify-center p-4">
+                    <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={closeFlyer}></div>
+                    <div className="relative bg-white w-full max-w-[320px] overflow-hidden shadow-2xl rounded-lg">
+                        <button className="absolute top-3 right-3 z-20 p-2 bg-black/40 rounded-full text-white" onClick={closeFlyer}>
+                            <Icon name="x" className="w-4 h-4" />
+                        </button>
+                        <img src="flyer.jpeg" className="w-full aspect-[4/5] object-cover bg-zinc-100" />
+                        <div className="p-5 text-center">
+                            <h3 className="text-lg font-bold uppercase tracking-tighter mb-1">Exclusive Message</h3>
+                            <button onClick={() => { closeFlyer(); setView('shop'); }} className="w-full bg-amber-600 text-white py-3 font-bold uppercase text-[10px] tracking-[0.2em] mt-4">
+                                Shop Collection
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )
+        );
+
+        const HomeView = () => (
+            <div>
+                {/* --- BRAND IDENTITY SECTION --- */}
+                <section className="bg-white pt-24 pb-12 px-4 flex flex-col items-center justify-center border-b-2 border-zinc-100">
+                    <div className="w-full max-w-[600px] aspect-[4/1] relative flex items-center justify-center bg-white overflow-hidden">
+                        <img src="BRANDIMAGE.png" alt="Remades Fashion" className="max-w-full max-h-full object-contain"
+                             onError={(e) => { e.target.parentElement.classList.add('border-y','border-zinc-100'); }} />
+                    </div>
+                    <p className="mt-4 text-[13px] text-amber-700 uppercase tracking-[0.6em] font-black italic">Style you to perfection</p>
+                </section>
+
+                {/* HERO SLIDESHOW WITH SHOP NOW */}
+                <header className="relative aspect-[6/1] w-full overflow-hidden bg-zinc-200">
+                    {heroImages.map((src, index) => (
+                        <img
+                            key={index}
+                            src={src}
+                            className={`absolute inset-0 w-full h-full object-contain img-fade ${index === activeSlide ? 'opacity-100' : 'opacity-0'}`}
+                            alt="Hero Slide"
+                        />
+                    ))}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent flex items-center justify-between px-4">
+                        <h2 className="text-[10px] font-bold text-white tracking-widest uppercase drop-shadow-md">
+                            Bespoke Luxury
+                        </h2>
+                        <button onClick={() => setView('shop')} className="bg-amber-600 text-white px-3 py-1.5 text-[7px] font-bold uppercase tracking-widest rounded-sm shadow-md">
+                            Shop Now
+                        </button>
+                    </div>
+                </header>
+
+                {/* CEO Section */}
+                <section className="py-16 px-6 bg-white border-y border-zinc-100">
+                    <div className="flex flex-col items-center text-center">
+                        <div className="relative w-40 h-56 mb-6 overflow-hidden rounded-sm shadow-lg grayscale bg-zinc-100">
+                            <img src="CEO_PICTURE.jpg" className="w-full h-full object-cover img-hover" alt="CEO" />
+                        </div>
+                        <h3 className="text-[10px] font-bold uppercase tracking-[0.4em] text-amber-600 mb-2">The Visionary</h3>
+                        <h2 className="text-xl font-bold uppercase tracking-tighter mb-3">Meet Our CEO</h2>
+                        <p className="text-xs text-zinc-500 leading-relaxed max-w-[280px] font-light italic">
+                            "We don't just dress you; we style you to perfection."
+                        </p>
+                    </div>
+                </section>
+
+                {/* CONSULTING SERVICES SECTION */}
+                <section className="py-16 px-6 bg-zinc-950 text-white text-center">
+                    <div className="mb-6">
+                        <Icon name="calendar" className="w-8 h-8 mx-auto text-amber-600" />
+                    </div>
+                    <h2 className="text-xl font-bold uppercase tracking-tighter mb-4">Consulting Services</h2>
+                    <p className="text-zinc-400 text-[10px] leading-relaxed max-w-xs mx-auto mb-8 font-bold uppercase tracking-widest">
+                        Bespoke Custom  Sessions
+                    </p>
+                    <div className="bg-zinc-900 border border-zinc-800 p-8 rounded-sm">
+                        <p className="text-amber-500 text-[10px] font-bold uppercase tracking-[0.3em] mb-3">Availability</p>
+                        <p className="text-xl font-bold tracking-tighter mb-1 uppercase">Mon — Thur</p>
+                        <p className="text-md text-zinc-300 font-light mb-8 italic">11:00 AM — 02:00 PM</p>
+                        <a href={`https://wa.me/${PHONE_NUMBER}`} className="inline-block bg-amber-600 text-white px-10 py-4 text-[10px] font-bold uppercase tracking-[0.2em] rounded-sm shadow-xl">
+                            Book  Appiontment
+                        </a>
+                    </div>
+                </section>
+
+                {/* --- REMADES ACADEMY SECTION --- */}
+                <section className="py-16 px-6 bg-white text-center border-b border-zinc-100">
+                    <div className="mb-6"><Icon name="graduation-cap" className="w-8 h-8 mx-auto text-amber-600" /></div>
+                    <h2 className="text-2xl font-black uppercase tracking-tighter mb-2 leading-none text-zinc-900 italic">Remades Fashion Training / Course</h2>
+                    <p className="text-zinc-500 text-[10px] leading-relaxed max-w-xs mx-auto mb-8 font-bold uppercase tracking-widest">Bespoke Tailoring Training</p>
+                    <div className="bg-stone-50 border border-stone-200 p-8 rounded-sm shadow-sm">
+                        <p className="text-zinc-600 text-xs leading-relaxed mb-6 font-light italic text-center font-medium">Master the craft of high-end tailoring from anywhere in the world. Our global course is now open for enrollment.</p>
+                        <a href={SELAR_COURSE_URL} target="_blank" rel="noopener noreferrer" className="bg-zinc-900 hover:bg-black text-white px-10 py-4 text-[10px] font-bold uppercase tracking-[0.2em] transition-all rounded-sm shadow-xl w-full inline-block active:scale-95 text-center">Enroll via Selar</a>
+                    </div>
+                </section>
+
+                {/* REDUCED CATEGORY BOXES SECTION */}
+                <section className="py-10 px-4">
+                    <h3 className="text-[10px] font-bold uppercase tracking-[0.3em] text-zinc-400 mb-8 flex items-center gap-2">
+                        Signature Categories <div className="h-[1px] flex-grow bg-zinc-200"></div>
+                    </h3>
+                    <div className="grid grid-cols-2 gap-y-12 gap-x-4 place-items-center">
+                        {collections.slice(0, 4).map((col, i) => (
+                            <div key={col.id} onClick={() => setView('collections')} className="flex flex-col items-center cursor-pointer w-full">
+                                <div className="relative w-[70%] aspect-[3/4] overflow-hidden bg-white border border-zinc-100 shadow-sm rounded-sm">
+                                    <img src={col.img} className="w-full h-full object-contain opacity-100 img-hover" />
+                                    <div className="absolute inset-0 bg-black/5"></div>
+                                </div>
+                                <span className="mt-4 text-[8px] font-bold uppercase tracking-[0.2em] text-zinc-800 border-b border-amber-600 pb-0.5">{col.title}</span>
+                            </div>
+                        ))}
+                    </div>
+                </section>
+
+                {/* Testimonials */}
+                <section className="py-12 bg-stone-100">
+                    <div className="px-6 mb-8 text-center">
+                        <h2 className="text-xl font-bold uppercase tracking-tighter">Client Stories</h2>
+                    </div>
+                    <div className="flex overflow-x-auto gap-4 px-6 no-scrollbar pb-6">
+                        {testimonials.map((t) => (
+                            <div key={t.id} className="min-w-[240px] bg-white p-6 rounded-sm shadow-sm border border-zinc-200">
+                                <div className="flex items-center gap-3 mb-4">
+                                    <img src={t.img} className="w-10 h-10 rounded-full object-cover grayscale bg-zinc-50" />
+                                    <div>
+                                        <h4 className="text-xs font-bold uppercase tracking-tight">{t.name}</h4>
+                                        <p className="text-[9px] text-amber-600 uppercase font-bold">{t.role}</p>
+                                    </div>
+                                </div>
+                                <p className="text-[11px] text-zinc-500 leading-relaxed italic font-light">"{t.text}"</p>
+                            </div>
+                        ))}
+                    </div>
+                </section>
+            </div>
+        );
+
+        const ShopView = () => (
+            <div className="pt-24 px-4 pb-20 max-w-lg mx-auto">
+                <h2 className="text-2xl font-bold uppercase tracking-tighter mb-8 text-center">Shop Collection -
+                Your order will arrive within 7 business days of purchase</h2>
+                <div className="grid grid-cols-2 gap-x-4 gap-y-10">
+                    {allProducts.map((item) => (
+                        <div key={item.id} className="group">
+                            <div className="aspect-[3/4] bg-white border border-zinc-100 overflow-hidden relative shadow-sm rounded-sm">
+                                <img src={item.img} className="w-full h-full object-contain img-hover" />
+                                <button
+                                    onClick={() => addToCart(item)}
+                                    className="absolute bottom-2 right-2 p-2 bg-amber-600 text-white rounded-full shadow-lg"
+                                >
+                                    <Icon name="plus" className="w-4 h-4" />
+                                </button>
+                            </div>
+                            <div className="mt-3 text-center">
+                                <p className="text-[8px] font-bold text-zinc-400 uppercase tracking-widest mb-1">{item.category}</p>
+                                <h4 className="text-[11px] font-bold uppercase leading-none">{item.name}</h4>
+                                <p className="text-amber-700 font-bold text-[10px] mt-1">₦{item.price.toLocaleString()}</p>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        );
+
+        const AboutView = () => (
+            <div className="pt-24 px-6 pb-20 max-w-lg mx-auto">
+                <div className="text-center mb-8">
+                    <h2 className="text-3xl font-bold uppercase tracking-tighter mb-2 leading-none">Our Story</h2>
+                    <div className="h-1 w-12 bg-amber-600 mx-auto"></div>
+                </div>
+                <div className="space-y-12">
+                    <div className="text-center space-y-6">
+                        <p className="text-sm text-zinc-600 leading-relaxed italic font-medium">
+                            Fashion is the silent story you tell the world. At Remades Fashion, we make sure it's a masterpiece.
+                        </p>
+                        <p className="text-xs text-zinc-500 leading-relaxed font-light text-justify">
+                            Remades Fashion emerged from a passion for transforming traditional heritage into contemporary luxury. We believe that every stitch holds the power to redefine confidence. Specializing in bespoke female tailoring, we bridge the gap between cultural artistry and modern silhouettes. Our journey is defined by a commitment to precision, from the first measurement to the final fitting. Whether it's a regal bridal gown, a sharp corporate suit, or a minimalist registry piece, we curate elegance tailored specifically to your unique silhouette.
+                        </p>
+                    </div>
+
+                    <div className="bg-zinc-900 text-white p-10 text-center rounded-sm">
+                        <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-amber-500 mb-2">Our Promise</p>
+                        <p className="text-lg font-bold tracking-tight italic">"Style you to perfection. Always."</p>
+                    </div>
+                </div>
+            </div>
+        );
+
+        const NewArrivalsView = () => (
+            <div className="pt-24 px-4 pb-20 max-w-lg mx-auto">
+                <h2 className="text-2xl font-bold uppercase tracking-tighter mb-8 text-center text-amber-600">New Arrivals</h2>
+                <div className="grid grid-cols-2 gap-4">
+                    {arrivals.map((item) => (
+                        <div key={item.id} className="group">
+                            <div className="aspect-[3/4] bg-white border border-zinc-100 overflow-hidden relative shadow-sm rounded-sm">
+                                <img src={item.img} className="w-full h-full object-contain img-hover" />
+                                <button onClick={() => addToCart(item)} className="absolute bottom-2 right-2 p-2 bg-amber-600 text-white rounded-full">
+                                    <Icon name="plus" className="w-4 h-4" />
+                                </button>
+                            </div>
+                            <div className="mt-3 text-center">
+                                <h4 className="text-[11px] font-bold uppercase leading-tight">{item.name}</h4>
+                                <p className="text-amber-700 font-bold text-[10px] mt-1">₦{item.price.toLocaleString()}</p>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        );
+
+        const CollectionsView = () => (
+            <div className="pt-24 px-4 pb-20 max-w-lg mx-auto">
+                <h2 className="text-2xl font-bold uppercase tracking-tighter mb-8 text-center text-amber-600">Collections</h2>
+                <div className="grid grid-cols-2 gap-3">
+                    {collections.map((col) => (
+                        <div key={col.id} className="relative aspect-square overflow-hidden bg-white border border-zinc-100 shadow-sm">
+                            <img src={col.img} className="w-full h-full object-contain opacity-100 img-hover" />
+                            <div className="absolute inset-0 bg-black/5 flex items-center justify-center">
+                                <span className="text-white bg-black/40 px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.2em]">{col.title}</span>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        );
+
+        const GalleryView = () => (
+            <div className="pt-24 px-4 pb-20 max-w-lg mx-auto">
+                <h2 className="text-2xl font-bold uppercase tracking-tighter mb-8 text-center">Gallery</h2>
+                <div className="grid grid-cols-2 gap-3">
+                    {galleryImages.map((img, i) => (
+                        <div key={i} className="aspect-[4/5] bg-white border border-zinc-100 overflow-hidden shadow-sm">
+                            <img src={img} className="w-full h-full object-contain img-hover" />
+                        </div>
+                    ))}
+                </div>
+            </div>
+        );
+
+        const ContactView = () => (
+            <div className="pt-24 px-6 animate-fade-in min-h-[60vh] max-w-md mx-auto">
+                <h2 className="text-3xl font-bold uppercase mb-4 tracking-tighter text-center leading-none">Contact Us</h2>
+                <p className="text-xs text-zinc-500 italic text-center mb-12 uppercase tracking-widest">Connect with our design studio. 260 LAGOS ROAD, IDI-ROKO, IKORODU</p>
+
+                <div className="space-y-16">
+                    <div className="flex flex-col items-center gap-4">
+                        <a href={`https://wa.me/${PHONE_NUMBER}`} className="p-5 bg-green-50 text-green-600 rounded-full shadow-lg transition-transform active:scale-90"><WhatsAppLogo className="w-10 h-10" /></a>
+                        <div className="text-center">
+                            <p className="text-[10px] uppercase font-bold text-zinc-400 tracking-widest mb-1">WhatsApp</p>
+                            <a href={`https://wa.me/${PHONE_NUMBER}`} className="text-sm font-bold text-zinc-900">+{PHONE_NUMBER}</a>
+                        </div>
+                    </div>
+                    <div className="flex flex-col items-center gap-4">
+                        <a href={`mailto:${EMAIL_ADDRESS}`} className="p-5 bg-amber-50 text-amber-600 rounded-full shadow-lg transition-transform active:scale-90"><Icon name="mail" className="w-10 h-10" /></a>
+                        <div className="text-center">
+                            <p className="text-[10px] uppercase font-bold text-zinc-400 tracking-widest mb-1">Email</p>
+                            <a href={`mailto:${EMAIL_ADDRESS}`} className="text-sm font-bold lowercase text-zinc-900">{EMAIL_ADDRESS}</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+
+        const FittingGuideView = () => (
+            <div className="pt-24 px-6 pb-20 max-w-lg mx-auto">
+                <h2 className="text-2xl font-bold uppercase tracking-tighter text-center mb-8">Fitting Guide</h2>
+                <div className="space-y-10">
+                    {[
+                        { t: "Traditional Attire/ Aso Ebi", list: ["Bust: Fullest part.", "Shoulder: Back edge to edge.", "Length: Shoulder to floor.", "Sleeve: Shoulder to wrist."] },
+                        { t: "Corporate Tailoring", list: ["Armhole: Comfort loop.", "Waist: Narrowest part.", "Inseam: Crotch to ankle.", "Hips: Fullest part seat."] },
+                        { t: "Bridal & Registry", list: ["Hollow to Hem: Collarbone floor.", "Underbust: Below bust line.", "Waist to Floor: For skirts.", "Natural Waist: For bodices."] }
+                    ].map((g, i) => (
+                        <div key={i} className="space-y-3">
+                            <h3 className="font-bold uppercase tracking-widest text-[13px] text-amber-600 border-b pb-2">{g.t}</h3>
+                            <ul className="text-[11px] space-y-2 list-disc pl-4 text-zinc-600">
+                                {g.list.map((l, j) => <li key={j}>{l}</li>)}
+                            </ul>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        );
+
+        return (
+            <div className="min-h-screen">
+                <Navbar />
+                <CartModal />
+                <FlyerModal />
+
+                {isMenuOpen && (
+                    <div className="fixed inset-0 z-[150] bg-white flex flex-col p-8">
+                        <div className="flex justify-between items-center mb-16">
+                            <div className="text-xl font-bold tracking-tighter uppercase">Remades</div>
+                            <button onClick={() => setIsMenuOpen(false)}><Icon name="x" className="w-8 h-8" /></button>
+                        </div>
+                        <ul className="space-y-8 text-3xl font-light uppercase tracking-[0.2em] flex-grow">
+                            <li className="cursor-pointer hover:text-amber-600" onClick={() => { setView('home'); setIsMenuOpen(false); }}>Home</li>
+                            <li className="cursor-pointer hover:text-amber-600" onClick={() => { setView('shop'); setIsMenuOpen(false); }}>Shopping</li>
+                            <li className="cursor-pointer hover:text-amber-600" onClick={() => { setView('collections'); setIsMenuOpen(false); }}>Collections</li>
+                            <li className="cursor-pointer hover:text-amber-600" onClick={() => { setView('gallery'); setIsMenuOpen(false); }}>Gallery</li>
+                            <li className="cursor-pointer hover:text-amber-600" onClick={() => { setView('about'); setIsMenuOpen(false); }}>About Us</li>
+                            <li className="cursor-pointer hover:text-amber-600" onClick={() => { setView('contact'); setIsMenuOpen(false); }}>Contact Us</li>
+                            <li className="cursor-pointer text-amber-600 font-bold" onClick={() => { setView('guide'); setIsMenuOpen(false); }}>Fitting Guide</li>
+                        </ul>
+
+                        <div className="mt-auto pt-8 border-t flex flex-col items-center gap-6">
+                            <div className="flex gap-10 items-center">
+                                <div className="flex flex-col items-center gap-1 text-center">
+                                    <a href={`https://wa.me/${PHONE_NUMBER}`} className="text-green-600"><WhatsAppLogo className="w-6 h-6" /></a>
+                                    <span className="text-[8px] font-bold text-zinc-400">+{PHONE_NUMBER}</span>
+                                </div>
+                                <div className="flex flex-col items-center gap-1 text-center">
+                                    <a href={`mailto:${EMAIL_ADDRESS}`} className="text-amber-600"><Icon name="mail" className="w-6 h-6" /></a>
+                                    <span className="text-[8px] font-bold text-zinc-400">{EMAIL_ADDRESS}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                <main>
+                    {view === 'home' && <HomeView />}
+                    {view === 'shop' && <ShopView />}
+                    {view === 'collections' && <CollectionsView />}
+                    {view === 'gallery' && <GalleryView />}
+                    {view === 'about' && <AboutView />}
+                    {view === 'guide' && <FittingGuideView />}
+                    {view === 'contact' && <ContactView />}
+                </main>
+
+                <footer className="bg-zinc-950 text-white py-16 px-6 mt-12">
+                    <div className="space-y-12 max-w-lg mx-auto">
+                        <div className="text-center space-y-4">
+                            <div className="text-2xl font-bold uppercase tracking-tighter">Remades <span className="text-amber-600">Fashion</span></div>
+                            <p className="text-amber-500 text-[10px] font-bold uppercase tracking-[0.3em] italic text-center">Style you to perfection</p>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-8 text-[10px] uppercase tracking-widest text-zinc-400 font-bold">
+                            <ul className="space-y-3">
+                                <li className="text-white mb-2 uppercase">Explore</li>
+                                <li className="cursor-pointer hover:text-white" onClick={() => setView('shop')}>Shopping</li>
+                                <li className="cursor-pointer hover:text-white" onClick={() => setView('collections')}>Collections</li>
+                                <li className="cursor-pointer hover:text-white" onClick={() => setView('about')}>About Us</li>
+                            </ul>
+                            <ul className="space-y-3 text-right">
+                                <li className="text-white mb-2 uppercase">Client Services</li>
+                                <li className="cursor-pointer hover:text-white" onClick={() => setView('guide')}>Fitting Guide</li>
+                                <li className="cursor-pointer hover:text-white" onClick={() => setView('contact')}>Contact Us</li>
+                                <li className="cursor-pointer hover:text-white text-amber-600 underline font-bold">My Profile</li>
+                            </ul>
+                        </div>
+
+                       <div className="flex justify-center gap-6 pt-4 text-zinc-500 items-center border-t border-zinc-900 pt-8">
+                            <a href="https://www.instagram.com/remades_creations?igsh=cDRlOWZlNm9hZWtv" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
+                                <Icon name="instagram" className="w-5 h-5 cursor-pointer" />
+                            </a>
+                            <a href="https://facebook.com/remadescreations" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
+                                <Icon name="facebook" className="w-5 h-5 cursor-pointer" />
+                            </a>
+                            <a href="https://twitter.com/remadesfashion" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
+                                <Icon name="twitter" className="w-5 h-5 cursor-pointer" />
+                            </a>
+                            <a href="https://tiktok.com/@remades_creations" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
+                                <TikTokIcon className="w-5 h-5 cursor-pointer" />
+                            </a>
+                            <a href={`https://wa.me/${PHONE_NUMBER}`} target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
+                                <WhatsAppLogo className="w-5 h-5 fill-current cursor-pointer" />
+                            </a>
+                        </div>
+
+                        <div className="text-center space-y-3 opacity-60">
+                            <p className="text-[8px] uppercase tracking-[0.2em] text-zinc-600 font-bold">© 2024 Remades Fashion • All Rights Reserved</p>
+                            <div className="text-[8px] uppercase tracking-[0.2em] text-zinc-700 space-y-2">
+                                <p>Powered by Dave Technologies | DaveTech 2026</p>
+                                <a href="https://danywilz.github.io" target="_blank" rel="noopener noreferrer" className="inline-block text-amber-600 underline font-bold">More about Dave Technologies Click Here</a>
+                            </div>
+                        </div>
+                    </div>
+                </footer>
+            </div>
+        );
+    };
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+</script>
+</body>
+</html>
